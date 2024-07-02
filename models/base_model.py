@@ -6,11 +6,21 @@ import uuid
 
 class BaseModel:
     """the super class of evtg"""
-    def __init__(self):
+    def __init__(self, **kwargs):
         """the constructor method"""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if kwargs and len(kwargs) > 0:
+            for key, value in kwargs.items():
+                if key == "__class__":
+                    pass
+                elif key == "created_at" or key == "updated_at":
+                    holder = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                    setattr(self, key, holder)
+                else:
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """the __str__ method"""
